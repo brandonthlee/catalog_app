@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog</title>
+</head>
+<body>
+
+<h1>Catalog App</h1>
+
+<!-- Search and Filter Form -->
+<form method="get" action="">
+    <!-- Search by description -->
+    <label for="q">Search:</label>
+    <input type="text" name="q" id="q" value="{{ request.GET.q }}" placeholder="Search by description">
+    <br>
+
+    <!-- Filter by Category -->
+    <label for="category">Category:</label>
+    <select name="category" id="category">
+        <option value="">All</option>
+        {% for category in categories %}
+            <option value="{{ category.name }}" {% if category.name == request.GET.category %} selected {% endif %}>
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <br>
+
+    <!-- Filter by Tags -->
+    <label>Tags:</label>
+    {% for tag in tags %}
+        <label>
+            <input type="checkbox" name="tags" value="{{ tag.name }}"
+            {% if tag.name in selected_tags %} checked {% endif %}>
+            {{ tag.name }}
+        </label>
+    {% endfor %}
+    <br>
+
+    <!-- Submit the form -->
+    <button type="submit">Search</button>
+</form>
+
+<!-- Display Products -->
+<h2>Products</h2>
+{% if products %}
+    <ul>
+        {% for product in products %}
+            <li>
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description }}</p>
+                <p><strong>Category:</strong> {{ product.category.name }}</p>
+                <p><strong>Tags:</strong>
+                    {% for tag in product.tags.all %}
+                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No products found matching your criteria.</p>
+{% endif %}
+
+</body>
+</html>
